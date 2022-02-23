@@ -68,8 +68,8 @@ export default function CollegeSearch() {
 
   return (
     <div className="w-screen h-screen flex flex-col gap-10 items-center">
-      <header className="flex flex-col gap-3">
-        <div className="flex mt-10">
+      <header className="flex flex-col gap-3 mt-6" >
+        <div >
           Colleges within
           <NumberInput autoFocus defaultValue={mileRadius} onChange={setMileRadius} />
           miles of
