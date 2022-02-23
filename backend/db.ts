@@ -77,11 +77,11 @@ export async function collegesCloseTo(
   mileRadius: number,
   limit: number,
 ): Promise<Array<CollegeApiResult>> {
-  // PostGIS uses meters
-  const metersInMile = 1609.34
   const db = connect()
 
-  const sql = (`
+  // PostGIS uses meters
+  const metersInMile = 1609.34
+  const sql = `
     WITH college_distance AS (
       SELECT *, ST_Distance('${toGeographyPG(source)}', location) / ${metersInMile} AS distance
       FROM college
@@ -91,7 +91,7 @@ export async function collegesCloseTo(
     WHERE distance <= ${mileRadius}
     ORDER BY distance ASC
     LIMIT ${limit}
-  `)
+  `
   const colleges = await db.raw(sql)
-  return { data: colleges.rows, sql }
+  return colleges.rows
 }
