@@ -12,6 +12,7 @@ async function defineSchema(db: Knex) {
   await db.schema
     .raw('CREATE EXTENSION IF NOT EXISTS postgis')
     .raw('DROP TABLE IF EXISTS college CASCADE')
+    // prettier-ignore
     .raw(`
       CREATE TABLE college (
         id SERIAL PRIMARY KEY,
@@ -73,7 +74,7 @@ export type Location = {
 const toGeographyPG = ({ longitude, latitude }: Location): string => `SRID=4326;POINT(${longitude} ${latitude})`
 
 export async function collegesCloseTo(
-  source: Location,
+  origin: Location,
   mileRadius: number,
   limit: number,
 ): Promise<Array<CollegeApiResult>> {
@@ -81,17 +82,13 @@ export async function collegesCloseTo(
 
   // PostGIS uses meters
   const metersInMile = 1609.34
-  const sql = `
-    WITH college_distance AS (
-      SELECT *, ST_Distance('${toGeographyPG(source)}', location) / ${metersInMile} AS distance
-      FROM college
-    )
-    SELECT name, city, state, image_url, distance
-    FROM college_distance
-    WHERE distance <= ${mileRadius}
-    ORDER BY distance ASC
-    LIMIT ${limit}
-  `
-  const colleges = await db.raw(sql)
-  return colleges.rows
+  const originPG = toGeographyPG(origin)
+  return db.with('college_distance', function() {
+    this.select(knex.raw('*, ST_Distance(?, location) / ? AS distance', [originPG, metersInMile]
+
+    ))}).select('name','city','state','image_url', 'distance')
+  .from('college_distance')
+  .where('distance', '<=', mileRadius)
+  .orderBy('distance', 'asc')
+  .limit(limit)
 }
