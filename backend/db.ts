@@ -83,13 +83,13 @@ export async function collegesCloseTo(
   // PostGIS uses meters
   const metersInMile = 1609.34
   const originPG = toGeographyPG(origin)
-  return db.with('college_distance', builder => 
-    builder
-      .select('*', db.raw('ST_Distance(?, location) / ? AS distance', [originPG, metersInMile]))
-      .from('college')
-  ).select('name','city','state','image_url', 'distance')
-  .from('college_distance')
-  .where('distance', '<=', mileRadius)
-  .orderBy('distance', 'asc')
-  .limit(limit)
+  return db
+    .with('college_distance', (builder) =>
+      builder.select('*', db.raw('ST_Distance(?, location) / ? AS distance', [originPG, metersInMile])).from('college'),
+    )
+    .select('name', 'city', 'state', 'image_url', 'distance')
+    .from('college_distance')
+    .where('distance', '<=', mileRadius)
+    .orderBy('distance', 'asc')
+    .limit(limit)
 }

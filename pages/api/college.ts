@@ -8,11 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   console.log(req.query)
 
   const { latitude, longitude, mileRadius, limit } = req.query
-  const location = {longitude: Number(longitude), latitude: Number(latitude)}
-  const colleges = await collegesCloseTo(
-    location, 
-    Number(mileRadius), 
-    limit ? Number(limit) : 10,
-  )
+  const location = { longitude: Number(longitude), latitude: Number(latitude) }
+  const colleges = await collegesCloseTo(location, Number(mileRadius), limit ? Number(limit) : 10)
   res.status(200).json(colleges)
 }
