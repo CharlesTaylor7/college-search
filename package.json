@@ -10,16 +10,15 @@
     "test": "jest",
     "format": "prettier --write .",
     "watch-css": "tailwindcss -i tailwind.source.css -o styles/tailwind.css --watch",
-
     "setup": "ts-node backend/setup.ts"
   },
   "dependencies": {
     "immutable": "^4.0.0",
-    "next": "12.1.0",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
     "knex": "^1.0.3",
-    "pg": "^8.7.3"
+    "next": "12.1.0",
+    "pg": "^8.7.3",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
   },
   "devDependencies": {
     "@types/node": "17.0.18",
@@ -29,7 +28,8 @@
     "prettier": "^2.5.1",
     "tailwindcss": "^3.0.23",
     "ts-node": "^10.5.0",
-    "typescript": "^4.5.5"
+    "typescript": "^4.5.5",
+    "use-debounce": "^7.0.1"
   },
   "prettier": {
     "trailingComma": "all",

@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 import type { CollegeApiResult } from '@/backend/db'
 import College from '@/components/College'
 import NumberInput from '@/components/NumberInput'
+import { useDebouncedCallback }  from 'use-debounce'
+ 
 
 type CollegesResult = Array<CollegeApiResult> | 'loading' | { error: string }
+
 
 export default function CollegeSearch() {
   const [mileRadius, setMileRadius] = useState(10)
@@ -26,8 +29,8 @@ export default function CollegeSearch() {
   }, [])
 
   // fetch colleges from the college api, whenever parameters change
-  useEffect(() => {
-    async function fetchFromApi() {
+  const fetchColleges = useDebouncedCallback(
+    async () => {
       if (latitude === undefined || longitude === undefined) return
       const response = await fetch(`/api/college/?mileRadius=${mileRadius}&latitude=${latitude}&longitude=${longitude}`)
       if (response.ok) {
@@ -36,8 +39,12 @@ export default function CollegeSearch() {
       } else {
         setColleges({ error: response.statusText })
       }
-    }
-    fetchFromApi()
+    },
+    // debounce by 500ms 
+    500,
+  )
+  useEffect(() => {
+    fetchColleges()
     // reset to loading state when params change
     return () => setColleges('loading')
   }, [mileRadius, latitude, longitude])
