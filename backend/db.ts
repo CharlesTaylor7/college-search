@@ -1,10 +1,13 @@
 import { Knex, knex } from 'knex'
 import collegeRecords from '../data/colleges.json'
 
+
 function connect(): Knex {
   return knex({
     client: 'postgres',
-    connection: {},
+    connection: {
+      database: 'college_search',
+    },
   })
 }
 
@@ -64,6 +67,8 @@ export async function setupDatabase() {
   const db = connect()
   await defineSchema(db)
   await loadData(db)
+  // destroys the connection pool, not the whole database :)
+  db.destroy()
 }
 
 export type Location = {

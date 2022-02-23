@@ -9,7 +9,9 @@
     "lint": "next lint",
     "test": "jest",
     "format": "prettier --write .",
-    "watch-css": "tailwindcss -i tailwind.source.css -o styles/tailwind.css --watch"
+    "watch-css": "tailwindcss -i tailwind.source.css -o styles/tailwind.css --watch",
+
+    "setup": "ts-node backend/setup.ts"
   },
   "dependencies": {
     "immutable": "^4.0.0",
