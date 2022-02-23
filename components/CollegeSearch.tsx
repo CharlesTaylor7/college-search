@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react'
 import type { CollegeApiResult } from '@/backend/db'
 import College from '@/components/College'
 import NumberInput from '@/components/NumberInput'
-import { useDebouncedCallback }  from 'use-debounce'
- 
+import { useDebouncedCallback } from 'use-debounce'
 
 type CollegesResult = Array<CollegeApiResult> | 'loading' | { error: string }
-
 
 export default function CollegeSearch() {
   const [mileRadius, setMileRadius] = useState(10)
@@ -40,7 +38,7 @@ export default function CollegeSearch() {
         setColleges({ error: response.statusText })
       }
     },
-    // debounce by 500ms 
+    // debounce by 500ms
     500,
   )
   useEffect(() => {

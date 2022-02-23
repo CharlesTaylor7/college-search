@@ -1,7 +1,6 @@
 import { Knex, knex } from 'knex'
 import collegeRecords from '../data/colleges.json'
 
-
 function connect(): Knex {
   return knex({
     client: 'postgres',
