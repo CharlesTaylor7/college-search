@@ -39,3 +39,6 @@ yarn-error.log*
 
 # Generated tailwind file
 styles/tailwind.css
+
+# vim swap files
+*.swp

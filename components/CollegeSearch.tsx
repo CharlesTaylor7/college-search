@@ -28,7 +28,7 @@ export default function CollegeSearch() {
   // fetch colleges from the college api, whenever parameters change
   useEffect(() => {
     async function fetchFromApi() {
-      if (latitude === undefined && longitude === undefined) return
+      if (latitude === undefined || longitude === undefined) return
       const response = await fetch(`/api/college/?mileRadius=${mileRadius}&latitude=${latitude}&longitude=${longitude}`)
       if (response.ok) {
         const colleges = await response.json()
@@ -46,7 +46,7 @@ export default function CollegeSearch() {
     if (Array.isArray(colleges)) {
       return (
         <main className="flex flex-col gap-3">
-          <p>{`${colleges.length} Colleges`}</p>
+          <p>{`${colleges.length} Nearest Colleges`}</p>
           {colleges.map((college, i) => (
             <College key={i} {...college} />
           ))}

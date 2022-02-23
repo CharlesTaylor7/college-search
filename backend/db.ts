@@ -9,7 +9,10 @@ function connect(): Knex {
 }
 
 async function defineSchema(db: Knex) {
-  await db.schema.raw('CREATE EXTENSION IF NOT EXISTS postgis').raw('DROP TABLE IF EXISTS college CASCADE').raw(`
+  await db.schema
+    .raw('CREATE EXTENSION IF NOT EXISTS postgis')
+    .raw('DROP TABLE IF EXISTS college CASCADE')
+    .raw(`
       CREATE TABLE college (
         id SERIAL PRIMARY KEY,
         name VARCHAR(200),
@@ -36,6 +39,7 @@ type CollegeBase = {
   state: string
   image_url: string
 }
+
 type CollegeRecord = CollegeBase & {
   location: string
 }
@@ -71,22 +75,23 @@ const toGeographyPG = ({ longitude, latitude }: Location): string => `SRID=4326;
 export async function collegesCloseTo(
   source: Location,
   mileRadius: number,
-  limit: number = 100,
+  limit: number,
 ): Promise<Array<CollegeApiResult>> {
   // PostGIS uses meters
   const metersInMile = 1609.34
-  const meterRadius = metersInMile * mileRadius
   const db = connect()
-  const colleges = await db.raw(`
+
+  const sql = (`
     WITH college_distance AS (
       SELECT *, ST_Distance('${toGeographyPG(source)}', location) / ${metersInMile} AS distance
       FROM college
     )
     SELECT name, city, state, image_url, distance
     FROM college_distance
-    WHERE distance <= ${meterRadius}
+    WHERE distance <= ${mileRadius}
     ORDER BY distance ASC
     LIMIT ${limit}
   `)
-  return colleges.rows
+  const colleges = await db.raw(sql)
+  return { data: colleges.rows, sql }
 }
